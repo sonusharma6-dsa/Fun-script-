@@ -1,11 +1,11 @@
-from tokens import Float, Integer, Operation , Paren , Declaration , Variable
+from tokens import Boolean, Declaration, Float, Integer, Operation, Paren, Variable
 
 
 
 class Lexer:
     digits = "0123456789"
-    operations = "+-*/="
-    words = "abcdefghijklmnopqrstuvwxyz"
+    operations = "+-*/=<>!"
+    words = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
     declarations = ["make"]
     def __init__(self, text):
         self.text = text
@@ -19,20 +19,21 @@ class Lexer:
                 self.tokens.append(self.extract_number())
 
             elif self.char in Lexer.operations:
-                self.tokens.append(Operation(self.char))
-                self.move()
+                self.tokens.append(self.extract_operation())
 
             elif self.char.isspace():
                 self.move()
 
-            elif self.char in "()":
+            elif self.char in "(){};":
                 self.tokens.append(Paren(self.char))
                 self.move()
 
             elif self.char in Lexer.words:
                 word = self.extract_words()
 
-                if word in Lexer.declarations:
+                if word in ("true", "false"):
+                    self.tokens.append(Boolean(word))
+                elif word in Lexer.declarations:
                     self.tokens.append(Declaration(word))
 
                 else:
@@ -41,6 +42,16 @@ class Lexer:
             else:
                 raise ValueError(f"Illegal character: {self.char}")
         return self.tokens
+
+    def extract_operation(self):
+        operation = self.char
+        self.move()
+        if self.char is not None and operation + self.char in (
+            "==", "!=", "<=", ">="
+        ):
+            operation += self.char
+            self.move()
+        return Operation(operation)
     def extract_words(self):
         word = ""
         while self.char is not None and self.char in Lexer.words:

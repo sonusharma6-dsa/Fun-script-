@@ -4,6 +4,7 @@ from interpreter import Interpreter
 from data import Data
 
 data = Data()
+pending = ""
 
 print("FunScript :")
 
@@ -17,9 +18,17 @@ while True:
     if text.strip() == "exit":
         break
 
+    pending = f"{pending} {text}".strip()
+    if pending.count("{") != pending.count("}"):
+        continue
+
     try:
-        tokens = Lexer(text).tokenize()
+        tokens = Lexer(pending).tokenize()
         tree = Parser(tokens).parse()
-        print(Interpreter(tree, data).interpret())
+        result = Interpreter(tree, data).interpret()
+        if result is not None:
+            print(result)
+        pending = ""
     except (ValueError, ZeroDivisionError) as error:
         print("Error:", error)
+        pending = ""
