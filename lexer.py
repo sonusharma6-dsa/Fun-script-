@@ -1,3 +1,6 @@
+from tokens import Float, Integer, Operation
+
+
 class Lexer:
     digits = "0123456789"
     operations = "+-*/"
@@ -15,27 +18,26 @@ class Lexer:
             elif self.char in Lexer.operations:
                 self.tokens.append(Operation(self.char))
                 self.move()
-            elif self.char == " ":
+            elif self.char.isspace():
                 self.move()
             else:
-                raise Exception(f"Illegal character: {self.char}")
+                raise ValueError(f"Illegal character: {self.char}")
         return self.tokens
 
     def extract_number(self):
         number = ""
-        is_float = False
+        decimal_count = 0
         while self.char is not None and (self.char in Lexer.digits or self.char == "."):
             if self.char == ".":
-                is_float = True
+                decimal_count += 1
+                if decimal_count > 1:
+                    raise ValueError(f"Invalid number: {number + self.char}")
             number += self.char
             self.move()
-        return Float(number) if is_float else Integer(number)
+        if number == ".":
+            raise ValueError("Invalid number: .")
+        return Float(number) if decimal_count else Integer(number)
 
     def move(self):
         self.idx += 1
         self.char = self.text[self.idx] if self.idx < len(self.text) else None
-
-
-lexer = Lexer("12 + 3.5 * 4")
-
-print(lexer.tokenize())
