@@ -1,4 +1,5 @@
-from tokens import Float, Integer, Operation
+from tokens import Float, Integer, Operation , Paren
+
 
 
 class Lexer:
@@ -19,6 +20,9 @@ class Lexer:
                 self.tokens.append(Operation(self.char))
                 self.move()
             elif self.char.isspace():
+                self.move()
+            elif self.char in "()":
+                self.tokens.append(Paren(self.char))
                 self.move()
             else:
                 raise ValueError(f"Illegal character: {self.char}")

@@ -7,6 +7,10 @@ class Token:
         return str(self.value)
 
 
+class Paren(Token):
+    def __init__(self, value):
+        super().__init__("PAREN", value)
+        
 class Integer(Token):
     def __init__(self, value):
         super().__init__("INT", value)
