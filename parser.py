@@ -9,6 +9,7 @@ class Parser:
             token = self.token
             self.move()
             return token
+        elif self.token is not None and (self.token.type == "INT" or self.token.type == "FLT")
         if self.token is None:
             raise ValueError("Expected a number, found end of expression")
         raise ValueError(f"Expected a number, found {self.token.value!r}")
