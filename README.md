@@ -1,5 +1,5 @@
 # Fun-script-
-Its my own programing as my fun project using pure python at all  
+Its my own programing as my fun project using pure python at all 
 
 ## Variables
 
@@ -15,4 +15,4 @@ make y = x * 2
 20
 ```
 
-Variables remain available for the lifetime of the shell session.
+Variables remain avail
