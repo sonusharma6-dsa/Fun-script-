@@ -9,6 +9,10 @@ class Parser:
             token = self.token
             self.move()
             return token
+        elif self.token is not None and self.token.type == "VAR":
+            token = self.token
+            self.move()
+            return token
         elif self.token is not None and self.token.value == "(":
             self.move()
             node = self.expression()
@@ -34,7 +38,22 @@ class Parser:
     def parse(self):
         if self.token is None:
             raise ValueError("Expression cannot be empty")
-        tree = self.expression()
+
+        if self.token.type == "DECL":
+            self.move()
+            if self.token is None or self.token.type != "VAR":
+                raise ValueError("Expected a variable name after 'make'")
+            variable = self.token
+            self.move()
+            if self.token is None or self.token.value != "=":
+                raise ValueError("Expected '=' after variable name")
+            operation = self.token
+            self.move()
+            value = self.expression()
+            tree = [variable, operation, value]
+        else:
+            tree = self.expression()
+
         if self.token is not None:
             raise ValueError(f"Unexpected token: {self.token.value!r}")
         return tree
