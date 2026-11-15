@@ -69,3 +69,17 @@ for i = 1 to 5 {
 
 The interactive shell accepts a complete statement on one line or collects
 multiple lines until a braced block is complete. Type `exit` to quit.
+
+## Java Markdown-to-HTML static site generator
+
+The Java assignment is in `src/`. It prompts for a Markdown source directory
+and writes generated pages to `dist/`:
+
+```powershell
+javac -d out src/*.java
+java -cp out SSGMain
+```
+
+The source directory may contain Markdown files in nested folders. The
+generator supports `#`, `##`, and `###` headings, paragraphs, and `**bold**`
+text while escaping HTML special characters.
